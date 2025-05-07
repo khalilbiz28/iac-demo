@@ -10,7 +10,23 @@ provider "aws" {
   }
 }
 
+resource "random_id" "unique" {
+  byte_length = 4
+}
+
 resource "aws_instance" "demo" {
-  ami           = "ami-12345678"
+  ami           = "ami-${random_id.unique.hex}"  # AMI générée dynamiquement
   instance_type = "t2.micro"
+
+  tags = {
+    Name = "demo-${random_id.unique.hex}"
+  }
+}
+terraform {
+  required_providers {
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.1"
+    }
+  }
 }
